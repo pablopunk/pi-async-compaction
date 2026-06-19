@@ -25,7 +25,7 @@ Then restart pi or run:
 
 ## Configuration
 
-Add this to `~/.pi/agent/settings.json`:
+In `~/.pi/agent/settings.json` (or `.pi/settings.json` for trusted projects):
 
 ```json
 {
@@ -36,58 +36,22 @@ Add this to `~/.pi/agent/settings.json`:
 }
 ```
 
-Project-local config is also supported in `.pi/settings.json` for trusted projects.
+| Option | Default | Description |
+|---|---|---|
+| `enabled` | `false` | Enable lazy compaction |
+| `thresholdPercent` | `80` | Context usage % that triggers compaction |
+| `summarizer` | current model | Optional model, e.g. `"anthropic/claude-sonnet-4-5"` or `{ "provider", "model" }` |
 
-### Options
-
-```json
-{
-  "lazyCompaction": {
-    "enabled": true,
-    "thresholdPercent": 80,
-    "summarizer": "anthropic/claude-sonnet-4-5"
-  }
-}
-```
-
-or:
+Disable pi's built-in auto-compaction so it doesn't fight with lazy compaction:
 
 ```json
 {
-  "lazyCompaction": {
-    "enabled": true,
-    "thresholdPercent": 80,
-    "summarizer": {
-      "provider": "anthropic",
-      "model": "claude-sonnet-4-5"
-    }
-  }
+  "compaction": { "enabled": false },
+  "lazyCompaction": { "enabled": true, "thresholdPercent": 80 }
 }
 ```
 
-- `enabled`: enables/disables lazy compaction. Defaults to `false`.
-- `thresholdPercent`: context usage percent that triggers compaction. Defaults to `80`.
-- `summarizer`: optional model for summaries. If omitted, lazy compaction uses the current conversation model.
-
-The summarizer must be available in pi and authenticated. If the configured summarizer is unavailable or unauthenticated, the extension falls back to the current conversation model when possible.
-
-## Recommended pi compaction setting
-
-Lazy compaction is independent from pi's built-in auto-compaction. To avoid pi's built-in blocking compaction path, you may want to disable built-in auto-compaction and let this extension handle it:
-
-```json
-{
-  "compaction": {
-    "enabled": false
-  },
-  "lazyCompaction": {
-    "enabled": true,
-    "thresholdPercent": 80
-  }
-}
-```
-
-Manual `/compact` remains pi's built-in command.
+Manual `/compact` remains available.
 
 ## Commands
 
@@ -101,11 +65,14 @@ On `agent_end`, the extension estimates current session context usage. Once usag
 
 After the summary completes, it appends a compaction entry directly with `firstKeptEntryId` set to the first current-branch entry after the pinned boundary. Future provider requests are adjusted through pi's `context` hook so the model receives the new compacted shape.
 
-## Notes
+### Rolling summary vs lazy compaction
 
-- Extensions run with your full system permissions. Review code before installing third-party pi packages.
-- This package is designed for git installation; no npm publish is required.
-- The extension uses pi's package manifest under the `pi.extensions` key.
+| | Rolling summary (built-in) | Lazy compaction |
+|---|---|---|
+| Blocks agent | ✅ | ❌ (background) |
+| Suffix messages | ❌ eventually summarized away | ✅ preserved verbatim |
+| Provider token cache | ❌ invalidated each time | ✅ warm between compactions |
+| Interaction during compaction | ❌ blocked | ✅ fully interactive |
 
 ## License
 
