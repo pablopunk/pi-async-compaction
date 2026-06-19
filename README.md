@@ -69,7 +69,7 @@ After the summary completes, it appends a compaction entry directly with `firstK
 
 | | Rolling summary (built-in) | Async compaction |
 |---|---|---|
-| Blocks agent | ✅ | ❌ (background) |
+| Non-blocking UI | ❌ | ✅ |
 | Suffix messages | ❌ eventually summarized away | ✅ preserved verbatim |
 | Provider token cache | ❌ invalidated each time | ✅ warm between compactions |
 | Interaction during compaction | ❌ blocked | ✅ fully interactive |
