@@ -74,6 +74,10 @@ After the summary completes, it appends a compaction entry directly with `firstK
 | Provider token cache | ❌ invalidated each time | ✅ warm between compactions |
 | Interaction during compaction | ❌ blocked | ✅ fully interactive |
 
+## Related
+
+- [pi.nvim](https://github.com/pablopunk/pi.nvim) - use *pi* on your favorite editor
+
 ## License
 
 MIT
