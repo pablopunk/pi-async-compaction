@@ -6,7 +6,7 @@
 
 ## TLDR;
 
-* You set a threshold, e.g., 80%:
+* You set a threshold, e.g., 50%:
 * When you reach it, the full context will start to be compacted in the background.
 * You can still iterate with the agent; those new messages WILL NOT get compacted.
 * Once the compaction finishes, the new context will contain a summary of the compacted context + your new messages in full.
