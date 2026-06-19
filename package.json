@@ -1,0 +1,22 @@
+{
+  "name": "pi-lazy-compaction",
+  "version": "0.1.0",
+  "description": "Lazy background compaction for pi sessions that does not block interactive input.",
+  "keywords": [
+    "pi-package",
+    "pi-extension",
+    "lazy-compaction",
+    "compaction"
+  ],
+  "license": "MIT",
+  "type": "module",
+  "peerDependencies": {
+    "@earendil-works/pi-ai": "*",
+    "@earendil-works/pi-coding-agent": "*"
+  },
+  "pi": {
+    "extensions": [
+      "./extensions/lazy-compaction.ts"
+    ]
+  }
+}
