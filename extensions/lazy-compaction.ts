@@ -284,13 +284,20 @@ ${conversationText}
 		}
 	}
 
-	function startLazyCompaction(ctx: ExtensionContext) {
-		if (!settings.enabled) return;
-		if (job) return;
+	function startLazyCompaction(ctx: ExtensionContext, opts?: { force?: boolean }) {
+		const force = opts?.force ?? false;
+
+		if (!force && !settings.enabled) return;
+		if (job) {
+			if (!force) return;
+			// Cancel the running job and start a fresh one for manual trigger
+			job.controller.abort();
+			job = null;
+		}
 
 		const boundaryLeafId = ctx.sessionManager.getLeafId();
 		if (!boundaryLeafId) return;
-		if (lastTriggeredLeafId === boundaryLeafId) return;
+		if (!force && lastTriggeredLeafId === boundaryLeafId) return;
 
 		const usage = getSessionContextUsage(ctx);
 		job = {
@@ -334,6 +341,18 @@ ${conversationText}
 		return {
 			messages: buildSessionContext(ctx.sessionManager.getEntries(), ctx.sessionManager.getLeafId()).messages,
 		};
+	});
+
+	pi.registerCommand("lazy-compaction", {
+		description: "Manually trigger lazy background compaction",
+		handler: async (_args, ctx) => {
+			if (job) {
+				ctx.ui.notify("A lazy compaction is already running; cancelling and restarting...", "info");
+			} else {
+				ctx.ui.notify("Triggering lazy compaction...", "info");
+			}
+			startLazyCompaction(ctx, { force: true });
+		},
 	});
 
 	pi.on("session_shutdown", (_event, ctx) => {

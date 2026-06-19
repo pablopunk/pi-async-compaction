@@ -89,6 +89,12 @@ Lazy compaction is independent from pi's built-in auto-compaction. To avoid pi's
 
 Manual `/compact` remains pi's built-in command.
 
+## Commands
+
+### `/lazy-compaction`
+
+Manually triggers lazy compaction immediately, regardless of the configured threshold or whether `enabled` is `false`. If a compaction is already running, it cancels it and starts a fresh one.
+
 ## How it works
 
 On `agent_end`, the extension estimates current session context usage. Once usage crosses `thresholdPercent`, it pins the current leaf entry as the boundary and starts a detached summarization job without calling `ctx.compact()`.
