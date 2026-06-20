@@ -1,8 +1,9 @@
+
 # pi-async-compaction
 
 > non-blocking compaction for [pi.dev](https://pi.dev/)
 
-<img width="1330" height="1073" alt="async compaction arrows" src="https://github.com/user-attachments/assets/52110d6d-c1cd-4d52-8f1e-14abe6407281" />
+<img width="1330" height="1073" alt="async compaction" src="https://github.com/user-attachments/assets/7e39b023-5527-44b2-819d-8bcc703040df" />
 
 ## TLDR;
 
