@@ -91,7 +91,10 @@ function loadSettings(ctx: ExtensionContext): AsyncCompactionSettings {
 	};
 
 	try {
-		settings = applySettings(settings, readJson(join(homedir() ?? "", ".pi/agent/settings.json")));
+		const home = homedir();
+		if (home) {
+			settings = applySettings(settings, readJson(join(home, ".pi/agent/settings.json"), ctx));
+		}
 	} catch (error) {
 		notify(ctx, `Could not read global ${SETTINGS_KEY} settings: ${error instanceof Error ? error.message : String(error)}`, "warning");
 	}
